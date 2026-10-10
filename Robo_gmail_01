@@ -1,0 +1,19 @@
+function deletarEmailsAntigos() {
+  // CONFIGURAÇÃO: Altere o tempo como preferir (ex: 'older_than:5y' para 5 anos, 'older_than:1y' para 1 ano)
+  var busca = "older_than:5y -is:starred"; 
+  
+  // O script processa em lotes de 100 para evitar travamentos do sistema
+  var lotes = GmailApp.search(busca, 0, 100);
+  
+  Logger.log("Total de conversas antigas encontradas neste lote: " + lotes.length);
+  
+  for (var i = 0; i < lotes.length; i++) {
+    lotes[i].moveToTrash(); // Envia para a lixeira do Gmail
+  }
+  
+  if (lotes.length > 0) {
+    Logger.log("Lote de e-mails antigos enviado para a lixeira com sucesso.");
+  } else {
+    Logger.log("Nenhum e-mail antigo encontrado para apagar.");
+  }
+}
