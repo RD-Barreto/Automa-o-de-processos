@@ -1,0 +1,16 @@
+function deletarEmailsAntigos() {
+  // CONFIGURAÇÃO: Apaga tudo o que foi recebido ANTES de 1º de janeiro de 2026
+  var busca = "before:2026/01/01 -is:starred"; 
+  
+  // Mantém o lote de 100 e-mails que funcionou bem na sua conta
+  var lotes = GmailApp.search(busca, 0, 100);
+  
+  console.log("E-mails antigos identificados: " + lotes.length);
+  
+  if (lotes.length > 0) {
+    GmailApp.moveThreadsToTrash(lotes);
+    console.log("Sucesso! " + lotes.length + " e-mails antigos foram movidos para a lixeira.");
+  } else {
+    console.log("Nenhum e-mail anterior a 2026 foi encontrado. Limpeza concluída!");
+  }
+}
