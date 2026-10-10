@@ -1,0 +1,16 @@
+function deletarEmailsAntigos() {
+  // CONFIGURAÇÃO: Altere o tempo como preferir
+  var busca = "older_than:5y -is:starred"; 
+  
+  // Reduzido para apenas 20 e-mails por vez para evitar que o Google trave
+  var lotes = GmailApp.search(busca, 0, 20);
+  
+  console.log("E-mails antigos identificados: " + lotes.length);
+  
+  if (lotes.length > 0) {
+    GmailApp.moveThreadsToTrash(lotes);
+    console.log("Sucesso! 20 e-mails foram movidos para a lixeira.");
+  } else {
+    console.log("Nenhum e-mail antigo encontrado.");
+  }
+}
