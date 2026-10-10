@@ -1,0 +1,36 @@
+function deletarEAssegurarEspaco() {
+  // 1. BUSCA E MOVE PARA A LIXEIRA (Até 100 por vez)
+  var buscaAntigos = "before:2026/01/01 -is:starred"; 
+  var loteAntigos = GmailApp.search(buscaAntigos, 0, 100);
+  
+  if (loteAntigos.length > 0) {
+    GmailApp.moveThreadsToTrash(loteAntigos);
+    console.log(loteAntigos.length + " e-mails antigos movidos para a lixeira.");
+  } else {
+    console.log("Nenhum e-mail anterior a 2026 encontrado para mover.");
+  }
+
+  // 2. ESVAZIA A LIXEIRA DEFINITIVAMENTE (Lote de até 100 por vez)
+  var loteLixeira = GmailApp.search("in:trash", 0, 100);
+  
+  if (loteLixeira.length > 0) {
+    // Coleta os IDs de todas as mensagens para destruição permanente
+    var IDsMensagens = [];
+    for (var i = 0; i < loteLixeira.length; i++) {
+      var mensagens = loteLixeira[i].getMessages();
+      for (var j = 0; j < mensagens.length; j++) {
+        IDsMensagens.push(mensagens[j].getId());
+      }
+    }
+    
+    // Deleta permanentemente do servidor do Google para liberar espaço
+    if (IDsMensagens.length > 0) {
+      // Processa o corte para não estourar limites do comando
+      var limiteIDs = IDsMensagens.slice(0, 100);
+      Gmail.Users.Messages.batchDelete({ 'ids': limiteIDs }, 'me');
+      console.log("Sucesso! " + limiteIDs.length + " mensagens foram deletadas permanentemente da lixeira.");
+    }
+  } else {
+    console.log("A lixeira já está vazia.");
+  }
+}
