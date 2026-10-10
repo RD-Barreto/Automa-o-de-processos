@@ -1,0 +1,38 @@
+function deletarEAssegurarEspaco() {
+  // 1. BUSCA E MOVE PARA A LIXEIRA
+  // Localiza e-mails recebidos antes de 01/01/2026 que não tenham estrela (favoritos)
+  var buscaAntigos = "before:2026/01/01 -is:starred"; 
+  var loteAntigos = GmailApp.search(buscaAntigos, 0, 100);
+  
+  console.log("E-mails antigos identificados na Caixa de Entrada: " + loteAntigos.length);
+  
+  if (loteAntigos.length > 0) {
+    GmailApp.moveThreadsToTrash(loteAntigos);
+    console.log("Sucesso: " + loteAntigos.length + " e-mails antigos movidos para a lixeira.");
+  } else {
+    console.log("Nenhum e-mail anterior a 2026 encontrado na Caixa de Entrada.");
+  }
+
+  // 2. ESVAZIA A LIXEIRA DEFINITIVAMENTE
+  var loteLixeira = GmailApp.search("in:trash", 0, 100);
+  
+  console.log("E-mails encontrados aguardando expurgo na lixeira: " + loteLixeira.length);
+  
+  if (loteLixeira.length > 0) {
+    var IDsMensagens = [];
+    for (var i = 0; i < loteLixeira.length; i++) {
+      var mensagens = loteLixeira[i].getMessages();
+      for (var j = 0; j < mensagens.length; j++) {
+        IDsMensagens.push(mensagens[j].getId());
+      }
+    }
+    
+    if (IDsMensagens.length > 0) {
+      var limiteIDs = IDsMensagens.slice(0, 100);
+      Gmail.Users.Messages.batchDelete({ 'ids': limiteIDs }, 'me');
+      console.log("Sucesso: " + limiteIDs.length + " mensagens deletadas permanentemente.");
+    }
+  } else {
+    console.log("A lixeira já está completamente vazia.");
+  }
+}
