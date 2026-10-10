@@ -1,0 +1,16 @@
+function deletarEmailsAntigos() {
+  var busca = "older_than:5y -is:starred"; 
+  var lotes = GmailApp.search(busca, 0, 100);
+  
+  console.log("Conversas antigas encontradas neste lote: " + lotes.length);
+  
+  for (var i = 0; i < lotes.length; i++) {
+    lotes[i].moveToTrash();
+  }
+  
+  if (lotes.length > 0) {
+    console.log("Lote de e-mails enviado para a lixeira.");
+  } else {
+    console.log("Nenhum e-mail antigo encontrado.");
+  }
+}
